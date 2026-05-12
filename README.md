@@ -38,7 +38,7 @@ templates/agents-profiles/
 Clone this repository and copy the skill into your Codex skills directory:
 
 ```bash
-git clone git@github.com:noshenxian/project-agent-rules-skills.git
+git clone https://github.com/noshenxian/project-agent-rules-skills.git
 cd project-agent-rules-skills
 mkdir -p ~/.codex/skills
 cp -R skills/project-agent-rules ~/.codex/skills/
