@@ -7,10 +7,11 @@ description: Use when creating, adapting, or updating project-level AGENTS.md ru
 
 ## Overview
 
-Create project-specific `AGENTS.md` rules by analyzing the actual project, not by choosing a fixed profile. The output is a concise section that tells future agents which workflows, skills, gstack commands, risks, and verification gates apply to this project.
+Create project-specific `AGENTS.md` rules by analyzing the actual project, not by choosing a fixed profile. This skill assumes superpowers and gstack are installed and treats them as core dependencies for agent workflow discipline and product/engineering process.
 
 ## Workflow
 
+0. Check superpowers and gstack availability. If either is missing, stop and ask the user to install it before generating or updating project rules.
 1. Read the current `AGENTS.md` if present, plus `README.md`, package/config files, test setup, and top-level directories.
 2. Identify project signals: domain, stack, runtime, data stores, external services, deployment target, test strategy, and high-risk failure modes.
 3. Select process routing: required superpowers skills first, then gstack commands for product, architecture, design, QA, ship, or deployment stages.
@@ -71,6 +72,8 @@ Use `scripts/apply-agents-section.sh` for deterministic marker replacement.
 
 If a gstack command and a superpowers skill overlap, use superpowers to enforce process discipline and gstack for stage-specific product or engineering review. Do not repeat equivalent reviews unless the first one leaves gaps.
 
+Do not generate fallback rules that replace superpowers or gstack with generic local checklists. Missing superpowers or gstack is a setup failure, not an equivalent mode.
+
 ## Common Mistakes
 
 | Mistake | Correction |
@@ -80,4 +83,3 @@ If a gstack command and a superpowers skill overlap, use superpowers to enforce 
 | Listing every possible skill | Route only skills triggered by project signals |
 | Writing vague rules like "test carefully" | Name concrete commands or verification gates |
 | Ignoring risk-specific rules | Add explicit gates for auth, cache, PII, money, deploy, concurrency |
-

@@ -35,6 +35,8 @@ rg -q 'PROJECT_AGENT_RULES' "$skill_file" || fail "skill must define stable sect
 rg -q 'superpowers' "$skill_file" || fail "skill must cover superpowers routing"
 rg -q 'gstack' "$skill_file" || fail "skill must cover gstack routing"
 rg -q 'Do not overwrite' "$skill_file" || fail "skill must forbid unsafe overwrite"
+rg -q 'core dependencies' "$skill_file" || fail "skill must define superpowers and gstack as core dependencies"
+rg -q 'Missing superpowers or gstack is a setup failure' "$skill_file" || fail "skill must reject fallback mode when dependencies are missing"
 
 sh -n "$apply_script"
 rg -q 'PROJECT_AGENT_RULES' "$apply_script" || fail "apply script must use stable markers"

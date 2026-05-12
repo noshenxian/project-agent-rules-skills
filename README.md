@@ -4,6 +4,8 @@
 
 It replaces fixed project templates with a context-driven workflow: inspect the project, identify the stack and risks, choose the right superpowers/gstack routing, then write only the project-specific section of `AGENTS.md`.
 
+This project treats `superpowers` and `gstack` as core dependencies: superpowers provides AI workflow discipline, and gstack provides product, architecture, QA, release, and deployment process.
+
 ## Why
 
 Fixed profiles such as `fastapi-service`, `nextjs-app`, or `openresty-lua-cache` do not scale well. Real projects often combine multiple runtimes, services, deployment targets, and risk profiles.
@@ -34,6 +36,11 @@ templates/agents-profiles/
 `skills/project-agent-rules/SKILL.md` is the skill entry point. The script under the skill folder safely replaces or appends the `PROJECT_AGENT_RULES` section in an `AGENTS.md` file.
 
 ## Install
+
+Install the required dependencies first:
+
+- superpowers: https://github.com/obra/superpowers
+- gstack: https://github.com/garrytan/gstack
 
 Clone this repository and copy the skill into your Codex skills directory:
 
@@ -66,13 +73,13 @@ If your environment exposes skills through a command, load the skill by name:
 project-agent-rules
 ```
 
-If you also use superpowers, you may load it through the superpowers Codex wrapper:
+With superpowers installed, you can load it through the superpowers Codex wrapper:
 
 ```bash
 ~/.codex/superpowers/.codex/superpowers-codex use-skill project-agent-rules
 ```
 
-Superpowers is optional. The skill can still generate `AGENTS.md` rules without it; generated rules should state when superpowers or gstack are unavailable and use equivalent local workflows.
+If superpowers or gstack is missing, stop and install the missing dependency before generating rules. This project does not treat generic local checklists as an equivalent fallback.
 
 The skill will produce a section shaped like this:
 
@@ -134,7 +141,7 @@ The test covers:
 - replacement mode when markers exist
 - failure without modifying user content when markers are mismatched
 
-Optional shell syntax checks:
+Additional shell syntax checks:
 
 ```bash
 sh -n scripts/init-agents.sh
@@ -144,9 +151,9 @@ sh -n skills/project-agent-rules/scripts/apply-agents-section.sh
 
 ## Requirements
 
+- Codex skills runtime for skill usage
+- superpowers
+- gstack
 - POSIX `sh`
 - `awk`, `grep`, `sed`, `cp`, `mkdir`
 - `rg` for the test script
-- Codex skills runtime for skill usage
-
-`gstack` and `superpowers` are optional integrations referenced by generated rules. This skill can still generate `AGENTS.md` guidance when either is unavailable. In that case, the generated rules should state the limitation explicitly.
