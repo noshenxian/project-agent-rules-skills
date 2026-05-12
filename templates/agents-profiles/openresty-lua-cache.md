@@ -1,33 +1,33 @@
-## OpenResty Lua 缓存插件规则
+## OpenResty Lua Cache Plugin Rules
 
-本项目目标是基于 OpenResty 实现一套 Lua 缓存插件。通用代理流程仍以本文件前文为准；本节只补充 OpenResty/Lua 缓存领域约束。
+This project aims to implement a Lua cache plugin on top of OpenResty. The generic agent workflow still comes from the earlier parts of `AGENTS.md`; this section only adds OpenResty/Lua cache-specific constraints.
 
-### 项目启动路由
+### Project Startup Routing
 
-- 从 0 启动插件项目时，先走 `superpowers:brainstorming`，再按 gstack 路由使用 `/office-hours` 和 `/plan-eng-review`。
-- 需要完整项目计划时，使用 `/autoplan`；但实现前仍必须用 `superpowers:writing-plans` 拆成可验证的小步骤。
-- 涉及实现或 bugfix 时，使用 `superpowers:test-driven-development` 或 `superpowers:systematic-debugging`。
-- 涉及性能、缓存命中率、延迟、吞吐时，使用 `/benchmark`。
-- 涉及安全、权限、缓存污染或跨用户数据泄漏时，使用 `/cso`。
-- 交付前使用 `/review` 和 `/qa` 或 `/qa-only`；发版前使用 `/ship`。
+- When starting a plugin project from zero, use `superpowers:brainstorming` first, then route through gstack `/office-hours` and `/plan-eng-review`.
+- When a full project plan is needed, use `/autoplan`; before implementation, still use `superpowers:writing-plans` to split the work into verifiable small steps.
+- For implementation or bug fixes, use `superpowers:test-driven-development` or `superpowers:systematic-debugging`.
+- For performance, cache hit ratio, latency, or throughput concerns, use `/benchmark`.
+- For security, authorization, cache poisoning, or cross-user data leakage concerns, use `/cso`.
+- Before delivery, use `/review` and `/qa` or `/qa-only`; before release, use `/ship`.
 
-### 设计约束
+### Design Constraints
 
-- 明确缓存 key：method、host、uri、query、headers、body hash 是否参与，必须写入设计文档或 README。
-- 明确缓存策略：TTL、stale-while-revalidate、bypass、purge、负缓存、错误降级和缓存击穿保护。
-- 明确缓存存储：`lua_shared_dict`、磁盘缓存、上游 Redis，或组合方案；不要默认引入外部服务。
-- 明确 OpenResty phase：`access_by_lua*`、`rewrite_by_lua*`、`content_by_lua*`、`header_filter_by_lua*`、`body_filter_by_lua*`、`log_by_lua*` 各自承担什么职责。
-- 默认先做最小可运行插件：读配置、生成 key、查缓存、回源、写缓存、暴露基础指标。
+- Define the cache key explicitly: whether method, host, URI, query, headers, and body hash participate must be documented in the design or README.
+- Define the cache policy: TTL, stale-while-revalidate, bypass, purge, negative caching, error fallback, and cache stampede protection.
+- Define the cache store: `lua_shared_dict`, disk cache, upstream Redis, or a combined approach. Do not introduce an external service by default.
+- Define OpenResty phase responsibilities: `access_by_lua*`, `rewrite_by_lua*`, `content_by_lua*`, `header_filter_by_lua*`, `body_filter_by_lua*`, and `log_by_lua*`.
+- Start with the smallest runnable plugin: read config, generate key, read cache, fetch upstream, write cache, and expose basic metrics.
 
-### 风险红线
+### Risk Boundaries
 
-- 不允许把带用户身份、Cookie、Authorization 或私有响应的数据缓存成公共缓存，除非设计明确隔离 key 和权限边界。
-- 不允许忽略 `Cache-Control`、`Set-Cookie`、状态码和响应大小限制。
-- 不允许在没有并发保护的情况下实现回源写缓存，避免缓存击穿。
-- 不允许只做 Lua 单元测试就声称插件可用；必须有 OpenResty/Nginx 级集成验证。
+- Do not cache user-specific, Cookie-bearing, Authorization-bearing, or private responses as public cache unless key isolation and authorization boundaries are explicitly designed.
+- Do not ignore `Cache-Control`, `Set-Cookie`, status codes, or response size limits.
+- Do not implement upstream refill without concurrency protection; prevent cache stampedes.
+- Do not claim the plugin is usable after Lua unit tests only; require OpenResty/Nginx-level integration verification.
 
-### 推荐测试
+### Recommended Tests
 
-- 优先使用项目已有测试方式；从 0 开始时优先考虑 Test::Nginx 或可重复的 OpenResty 集成测试脚本。
-- 至少覆盖：命中、未命中、TTL 过期、bypass、purge、上游错误、并发回源、不同 header/query 的 key 隔离。
-- 性能验证至少记录基线延迟、命中后延迟、回源延迟和高并发下错误率。
+- Prefer the project's existing test method. From zero, consider Test::Nginx or repeatable OpenResty integration test scripts.
+- Cover at least: hit, miss, TTL expiry, bypass, purge, upstream error, concurrent refill, and key isolation across headers and query strings.
+- Performance verification should record baseline latency, hit latency, upstream latency, and error rate under high concurrency.

@@ -1,45 +1,45 @@
 # AGENTS.md
 
-本文件定义“计算器”项目的项目级代理规则。通用代理规则由上层项目或运行环境提供；本文件只描述计算器项目的专用约束。
+This file defines project-level agent rules for the calculator project. Generic agent rules come from the parent project or runtime environment; this file only describes calculator-specific constraints.
 
 <!-- PROJECT_AGENT_RULES_START -->
 ## Project-Specific Agent Rules
 
 ### Project Signals
 
-- 项目类型：计算器应用。
-- 运行形态：未指定，默认按浏览器端或本地轻量应用处理。
-- 核心领域：表达式输入、数字运算、显示格式、错误处理、键盘/按钮交互。
-- 状态模型：当前输入、历史表达式、运算结果、错误状态、可选的计算历史。
-- 主要风险：浮点精度、除零、表达式解析错误、连续运算语义、用户输入边界、移动端布局。
-- 交付目标：可运行、可测试、交互清晰的最小计算器。
+- Project type: calculator application.
+- Runtime shape: unspecified; default to a browser-based or lightweight local app.
+- Core domain: expression input, numeric operations, display formatting, error handling, keyboard and button interactions.
+- State model: current input, expression history, calculation result, error state, and optional calculation history.
+- Main risks: floating-point precision, division by zero, expression parsing errors, chained operation semantics, input boundaries, and mobile layout.
+- Delivery target: runnable, testable, clear-interaction minimal calculator.
 
 ### Required Routing
 
-- 新增功能、改变交互模型或决定架构前，必须先澄清计算器范围：基础四则运算、科学计算、历史记录、键盘支持、移动端适配是否需要。
-- 必须使用 superpowers 流程类 skill 约束工作方式：需求澄清/计划、测试优先、完成前验证。
-- 必须使用 gstack 处理产品范围、界面体验和实现完整性：产品/体验阶段使用 `/office-hours` 或 `/plan-design-review`，实现检查阶段使用 `/review` 或 `/qa`。
-- 如果 superpowers 或 gstack 不可用，停止生成或修改规则，先要求安装缺失依赖；不要用普通本地 checklist 伪装成等价替代。
+- Before adding features, changing the interaction model, or choosing architecture, clarify calculator scope: basic arithmetic, scientific functions, history, keyboard support, and mobile adaptation.
+- Use superpowers process skills to constrain the workflow: requirements clarification/planning, test-first work, and verification before completion.
+- Use gstack for product scope, interface experience, and implementation completeness: `/office-hours` or `/plan-design-review` during product/UX work, and `/review` or `/qa` during implementation checks.
+- If superpowers or gstack is unavailable, stop generating or editing rules and ask for the missing dependency to be installed. Do not pretend that a generic local checklist is equivalent.
 
 ### Engineering Rules
 
-- 计算逻辑必须与 UI 分离。核心运算、表达式解析、格式化和错误处理应放在可单独测试的模块中。
-- 不要直接用 `eval` 执行用户输入。若支持表达式输入，应使用显式 parser、受限 tokenizer，或只支持按钮驱动的受控运算状态机。
-- 明确数字精度策略：原生浮点、定点小数、或 decimal 库。涉及货币或高精度计算时不得使用裸浮点作为最终结果。
-- 必须定义错误语义：除零、非法表达式、溢出、空输入、重复操作符、小数点重复输入。
-- UI 交互至少覆盖：数字输入、清除、退格、连续运算、等号重复点击、小数输入、负数输入。
-- 布局应适配常见桌面和移动宽度；按钮尺寸、焦点状态和键盘输入应可用。
-- 不要在未确认需求前加入科学计算、单位换算、主题系统、账户、云同步等扩展功能。
+- Calculation logic must be separated from UI. Core arithmetic, expression parsing, formatting, and error handling should live in modules that can be tested independently.
+- Do not execute user input with `eval`. If expression input is supported, use an explicit parser, a constrained tokenizer, or a button-driven controlled operation state machine.
+- Define the numeric precision strategy: native floating point, fixed-point decimal, or a decimal library. For money or high-precision calculations, bare floating point must not be the final result representation.
+- Define error semantics: division by zero, invalid expression, overflow, empty input, repeated operators, and repeated decimal point input.
+- UI interactions should cover at least: digit input, clear, backspace, chained operations, repeated equals, decimal input, and negative number input.
+- Layout should work at common desktop and mobile widths. Button sizes, focus states, and keyboard input must be usable.
+- Do not add scientific calculation, unit conversion, themes, accounts, or cloud sync before the requirement is confirmed.
 
 ### Verification Gates
 
-- 必须有可重复验证的核心计算测试，至少覆盖：
-  - 加、减、乘、除。
-  - 运算优先级或明确说明不支持优先级。
-  - 小数计算。
-  - 除零和非法输入。
-  - 连续运算和清除状态。
-- 如果是 Web UI，必须验证按钮点击、键盘输入、移动端布局和错误显示。
-- 完成前必须运行项目已有测试命令；如果项目尚无测试框架，至少提供一组手工验证步骤和期望结果。
-- 不得在没有运行验证的情况下声称“计算正确”“交互完成”或“可以发布”。
+- Provide repeatable core calculation tests covering at least:
+  - Addition, subtraction, multiplication, and division.
+  - Operator precedence, or an explicit statement that precedence is not supported.
+  - Decimal calculations.
+  - Division by zero and invalid input.
+  - Chained operations and clear state.
+- For a Web UI, verify button clicks, keyboard input, mobile layout, and error display.
+- Before completion, run the project's existing test command. If the project has no test framework, provide manual verification steps with expected results.
+- Do not claim that "calculation is correct", "interaction is complete", or "it can be released" without running verification.
 <!-- PROJECT_AGENT_RULES_END -->

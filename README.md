@@ -1,5 +1,7 @@
 # project-agent-rules
 
+[Chinese](README.zh-CN.md)
+
 `project-agent-rules` is a Codex skill for creating and maintaining project-level `AGENTS.md` rules.
 
 It replaces fixed project templates with a context-driven workflow: inspect the project, identify the stack and risks, choose the right superpowers/gstack routing, then write only the project-specific section of `AGENTS.md`.
@@ -45,7 +47,7 @@ Install the required dependencies first:
 Clone this repository and copy the skill into your Codex skills directory:
 
 ```bash
-git clone https://github.com/noshenxian/project-agent-rules-skills.git
+git clone git@github.com:noshenxian/project-agent-rules-skills.git
 cd project-agent-rules-skills
 mkdir -p ~/.codex/skills
 cp -R skills/project-agent-rules ~/.codex/skills/

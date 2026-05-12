@@ -38,6 +38,27 @@ rg -q 'Do not overwrite' "$skill_file" || fail "skill must forbid unsafe overwri
 rg -q 'core dependencies' "$skill_file" || fail "skill must define superpowers and gstack as core dependencies"
 rg -q 'Missing superpowers or gstack is a setup failure' "$skill_file" || fail "skill must reject fallback mode when dependencies are missing"
 
+canonical_english_files="
+README.md
+AGENTS.md
+skills/project-agent-rules/SKILL.md
+templates/agents-profiles/openresty-lua-cache.md
+examples/calculator/AGENTS.md
+scripts/init-agents.sh
+scripts/test_project_agent_rules_skill.sh
+skills/project-agent-rules/scripts/apply-agents-section.sh
+"
+
+for canonical_file in $canonical_english_files; do
+  [ -f "$canonical_file" ] || fail "missing canonical file: $canonical_file"
+  if rg -q '[\p{Han}]' "$canonical_file"; then
+    fail "canonical English file contains Han characters: $canonical_file"
+  fi
+done
+
+[ -f "README.zh-CN.md" ] || fail "missing localized README.zh-CN.md"
+rg -q '[\p{Han}]' "README.zh-CN.md" || fail "README.zh-CN.md must contain Chinese localization"
+
 sh -n "$apply_script"
 rg -q 'PROJECT_AGENT_RULES' "$apply_script" || fail "apply script must use stable markers"
 
